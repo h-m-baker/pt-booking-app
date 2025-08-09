@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coach Booking</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <video class="bg-video" autoplay muted loop playsinline poster="bg_fallback.jpg">
+    <source src="bg.mp4" type="video/mp4" />
+  </video>
+  <div class="overlay"></div>
+
+  <main>
+    <h1>Book a Private</h1>
+
+    <form id="booking-form">
+      <label>Full name
+        <input type="text" name="person_name" autocomplete = "name" inputmode = "text" required />
+      </label>
+      <label>Email (optional)
+        <input type="email" name="person_email" autocomplete="email" inputmode="email" />
+      </label>
+
+      <label>Location
+        <select name="location" required>
+          <option value="">Select…</option>
+          <option>Hurstville Martial Arts</option>
+          <option>Academy 411</option>
+          <option>Grappling Education</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label>Date
+        <input type="date" id="date" required />
+      </label>
+      <label>Available times
+        <div id="slots" class="slots-grid" aria-live="polite"></div>
+        <small>Sessions are 1 hour in duration</small>
+      </label>
+
+      <button id="submitBtn" type="submit">Book</button>
+      <p id="msg"></p>
+    </form>
+
+    <section id="upcomin" hidden>
+      <h2>Upcoming bookings</h2>
+      <ul id="list"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

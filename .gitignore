@@ -1,0 +1,17 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+server/sa-key.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Builds
+dist/
+build/

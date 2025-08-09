@@ -1,0 +1,183 @@
+/* =========================
+   Base / Variables
+   ========================= */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+:root {
+  --panel-bg: rgba(255,255,255,0.5);
+  --panel-border: rgba(255,255,255,0.6);
+  --panel-radius: 16px;
+  --panel-pad: 18px;
+
+  --text-muted: #5f6b7a;
+
+  --brand: #2563eb;
+  --brand-ink: #fff;
+  --field-border: #d0d7de;
+  --field-radius: 12px;
+
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.15);
+  --shadow-btn: 0 6px 16px rgba(37,99,235,0.35);
+  --shadow-btn-hover: 0 8px 20px rgba(37,99,235,0.45);
+}
+
+/* =========================
+   Background video / overlay
+   ========================= */
+.bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  opacity: 0.25;
+  filter: saturate(85%) contrast(90%);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.35));
+}
+
+/* =========================
+   Main glass card
+   ========================= */
+main {
+  width: min(92vw, 720px);
+  margin: 28px auto;
+  padding: var(--panel-pad);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(6px);
+}
+
+main h1 {
+  margin: 0 0 10px;
+  font-size: clamp(22px, 2.6vw, 32px);
+  letter-spacing: -0.02em;
+}
+
+/* =========================
+   Form ergonomics
+   ========================= */
+form label { display: block; margin: 12px 0; }
+
+input, select, button {
+  width: 100%;
+  font-size: 16px; /* >=16px prevents iOS zoom-on-focus */
+  padding: 12px 12px;
+  line-height: 1.2;
+  border: 1px solid var(--field-border);
+  border-radius: var(--field-radius);
+  background: #fff;
+}
+
+input:focus, select:focus, button:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+small { color: var(--text-muted); }
+
+/* Primary submit button */
+#submitBtn {
+  background: #6b7280;       /* medium grey */
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#submitBtn:hover {
+  background: #4b5563;       /* darker grey on hover */
+}
+
+#submitBtn:active {
+  transform: scale(0.99);
+}
+
+#submitBtn:disabled {
+  background: #9ca3af;       /* light grey when disabled */
+  cursor: not-allowed;
+}
+
+/* =========================
+   Time slot buttons
+   ========================= */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.slot-btn {
+  display: inline-block;
+  padding: 10px 12px;
+  text-align: center;
+  border-radius: 10px;
+  border: 1px solid #d0d7de;
+  background: #f3f4f6;       /* light grey background */
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.slot-btn:hover {
+  background: #e5e7eb;       /* slightly darker on hover */
+}
+
+.slot-btn.selected {
+  background: #6b7280;       /* match main button grey */
+  color: white;
+  border-color: #6b7280;
+}
+
+.slot-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* =========================
+   Responsive tweaks
+   ========================= */
+@media (max-width: 480px) {
+  main { width: 94vw; margin: 16px auto; padding: 14px; }
+}
+
+/* Hide video / use poster on small screens or reduced motion/data */
+@media (max-width: 768px), (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
+  .bg-video { display: none; }
+  .overlay { background: rgba(0,0,0,0.32); } /* a touch more contrast */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: -2;
+    background: url('bg_fallback.jpg') center / cover no-repeat;
+    filter: saturate(85%) contrast(90%);
+    opacity: 0.35;
+  }
+}
+
+/* Respect iPhone notches / safe areas */
+@supports (padding: max(0px)) {
+  body { padding-bottom: max(0px, env(safe-area-inset-bottom)); }
+  main { margin-top: max(16px, env(safe-area-inset-top)); }
+}
+
+/* =========================
+   High contrast (accessibility)
+   ========================= */
+@media (prefers-contrast: more) {
+  .slot-btn.selected { box-shadow: 0 0 0 3px rgba(37,99,235,0.5) inset; }
+  input:focus, select:focus, button:focus { outline-width: 4px; }
+}
