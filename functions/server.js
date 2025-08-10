@@ -3,6 +3,7 @@ const { onRequest } = require("firebase-functions/v2/https");
 const { initializeApp, applicationDefault } = require("firebase-admin/app");
 const { getFirestore, Timestamp } = require("firebase-admin/firestore");
 const { google } = require("googleapis");
+const { DateTime } = require("luxon");
 require("dotenv").config(); 
 
 // Admin SDK (uses this project's service account in Cloud Functions)
@@ -137,8 +138,13 @@ app.post("/api/bookings", async (req, res) => {
       return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const startISO = new Date(start_local).toISOString();
-    const endISO   = new Date(new Date(startISO).getTime() + 60 * 60 * 1000).toISOString();
+    const dt = DateTime.fromISO(String(start_local).trim(), { zone: TIMEZONE});
+    if (!dt.isValid){
+        return res.status(400).json({ error: "Invalid start time."});
+    }
+    const startISO = dt.toUTC().toISO();
+    const endISO = dt.plus({ hours: 1 }).toUTC().toISO();
+
     if (!isFinite(new Date(start_local).getTime())){
         return res.status(400).json({ error: "Invalid start time."})
     }
