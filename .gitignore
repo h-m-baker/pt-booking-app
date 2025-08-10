@@ -25,7 +25,7 @@ functions/.env
 .env
 *.env
 
-# Legacy server we’re removing
+# Legacy server that was removed
 server/
 server/**
 
