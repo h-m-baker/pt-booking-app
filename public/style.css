@@ -1,14 +1,18 @@
-/* =========================
-   Base / Variables
-   ========================= */
+/* Base & Variables */
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+html, body {
+  margin: 0; height: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-text-size-adjust: 100%;
+  color: #0b1220;
+}
 :root {
-  --panel-bg: rgba(255,255,255,0.5);
-  --panel-border: rgba(255,255,255,0.6);
+  --panel-bg: rgba(255,255,255,0.42);
+  --panel-border: rgba(255,255,255,0.42);
   --panel-radius: 16px;
   --panel-pad: 18px;
 
+  --text: #0b1220;
   --text-muted: #5f6b7a;
 
   --brand: #2563eb;
@@ -16,19 +20,25 @@ html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, Seg
   --field-border: #d0d7de;
   --field-radius: 12px;
 
+  --btn-grey: #6b7280;
+  --btn-grey-dark: #4b5563;
+  --btn-grey-disabled: #9ca3af;
+
   --shadow-soft: 0 10px 30px rgba(0,0,0,0.15);
-  --shadow-btn: 0 6px 16px rgba(37,99,235,0.35);
-  --shadow-btn-hover: 0 8px 20px rgba(37,99,235,0.45);
 }
 
-/* =========================
-   Background video / overlay
-   ========================= */
+:root { -webkit-tap-highlight-color: transparent; }
+
+/* Links inherit color so no “browser blue” */
+a { color: inherit; text-decoration: underline; text-decoration-color: rgba(0,0,0,.25); }
+a:hover { text-decoration-color: rgba(0,0,0,.45); }
+/* If you ever render tel: links, keep them neutral too */
+a[href^="tel"] { color: inherit; text-decoration: none; }
+
+/* Background video if comes available */
 .bg-video {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
   object-fit: cover;
   z-index: -2;
   opacity: 0.25;
@@ -36,15 +46,11 @@ html, body { margin: 0; height: 100%; font-family: system-ui, -apple-system, Seg
 }
 
 .overlay {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
+  position: fixed; inset: 0; z-index: -1;
   background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.35));
 }
 
-/* =========================
-   Main glass card
-   ========================= */
+/* Main card where booking happens */
 main {
   width: min(92vw, 720px);
   margin: 28px auto;
@@ -53,7 +59,7 @@ main {
   border: 1px solid var(--panel-border);
   border-radius: var(--panel-radius);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
 main h1 {
@@ -62,14 +68,13 @@ main h1 {
   letter-spacing: -0.02em;
 }
 
-/* =========================
-   Form ergonomics
-   ========================= */
-form label { display: block; margin: 12px 0; }
+/* Form erganomics */
+form label { display: block; margin: 12px 0; color: var(--text); }
 
 input, select, button {
   width: 100%;
-  font-size: 16px; /* >=16px prevents iOS zoom-on-focus */
+  font: inherit; color: inherit;
+  font-size: 16px; /* prevent iOS zoom-on-focus */
   padding: 12px 12px;
   line-height: 1.2;
   border: 1px solid var(--field-border);
@@ -77,41 +82,31 @@ input, select, button {
   background: #fff;
 }
 
-input:focus, select:focus, button:focus {
-  outline: 3px solid rgba(37, 99, 235, 0.35);
+/* Accessible, neutral focus (no harsh blue) */
+:focus-visible {
+  outline: 2px solid #111;
   outline-offset: 2px;
+  border-radius: 12px;
 }
 
 small { color: var(--text-muted); }
 
-/* Primary submit button */
+/* Primary submit button (neutral grey) */
 #submitBtn {
-  background: #6b7280;       /* medium grey */
+  background: var(--btn-grey);
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   padding: 12px 16px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.02s ease;
 }
+#submitBtn:hover { background: var(--btn-grey-dark); }
+#submitBtn:active { transform: scale(0.99); }
+#submitBtn:disabled { background: var(--btn-grey-disabled); cursor: not-allowed; }
 
-#submitBtn:hover {
-  background: #4b5563;       /* darker grey on hover */
-}
-
-#submitBtn:active {
-  transform: scale(0.99);
-}
-
-#submitBtn:disabled {
-  background: #9ca3af;       /* light grey when disabled */
-  cursor: not-allowed;
-}
-
-/* =========================
-   Time slot buttons
-   ========================= */
+/* Time slot buttons */
 .slots-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -121,44 +116,41 @@ small { color: var(--text-muted); }
 
 .slot-btn {
   display: inline-block;
-  padding: 10px 12px;
+  padding: 12px 12px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #d0d7de;
-  background: #f3f4f6;       /* light grey background */
+  background: #f3f4f6;
   cursor: pointer;
   user-select: none;
   font-weight: 600;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.02s ease;
 }
-
-.slot-btn:hover {
-  background: #e5e7eb;       /* slightly darker on hover */
-}
-
+.slot-btn:hover { background: #e5e7eb; }
+.slot-btn:active { transform: scale(0.99); }
 .slot-btn.selected {
-  background: #6b7280;       /* match main button grey */
+  background: var(--btn-grey);
   color: white;
-  border-color: #6b7280;
+  border-color: var(--btn-grey);
+  outline: 2px solid #111;
+  outline-offset: -2px;
 }
-
 .slot-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   text-decoration: line-through;
 }
 
-/* =========================
-   Responsive tweaks
-   ========================= */
+/* Responsive tings */
 @media (max-width: 480px) {
   main { width: 94vw; margin: 16px auto; padding: 14px; }
+  .slots-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* Hide video / use poster on small screens or reduced motion/data */
 @media (max-width: 768px), (prefers-reduced-motion: reduce), (prefers-reduced-data: reduce) {
   .bg-video { display: none; }
-  .overlay { background: rgba(0,0,0,0.32); } /* a touch more contrast */
+  .overlay { background: rgba(0,0,0,0.32); }
   body::before {
     content: "";
     position: fixed; inset: 0; z-index: -2;
@@ -174,10 +166,8 @@ small { color: var(--text-muted); }
   main { margin-top: max(16px, env(safe-area-inset-top)); }
 }
 
-/* =========================
-   High contrast (accessibility)
-   ========================= */
+/* High contrast */
 @media (prefers-contrast: more) {
-  .slot-btn.selected { box-shadow: 0 0 0 3px rgba(37,99,235,0.5) inset; }
-  input:focus, select:focus, button:focus { outline-width: 4px; }
+  .slot-btn.selected { box-shadow: 0 0 0 3px rgba(0,0,0,0.45) inset; }
+  :focus-visible { outline-width: 3px; }
 }

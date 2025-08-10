@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Coach Booking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>Jude Kean Privates</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -19,8 +20,15 @@
       <label>Full name
         <input type="text" name="person_name" autocomplete = "name" inputmode = "text" required />
       </label>
-      <label>Email (optional)
-        <input type="email" name="person_email" autocomplete="email" inputmode="email" />
+      <label>Phone Number (optional)
+        <input
+          type="tel"
+          name="phone"
+          inputmode="tel"
+          autocomplete="tel"
+          placeholder="e.g. 0400 123 456"
+          pattern="[\d +()-]{8,20}"
+        />
       </label>
 
       <label>Location

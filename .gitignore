@@ -5,7 +5,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment
-.env
 server/sa-key.json
 
 # OS
@@ -15,3 +14,26 @@ Thumbs.db
 # Builds
 dist/
 build/
+
+# Node & firebase
+node_modules/
+functions/node_modules/
+.firebase/
+
+# Firebase local env
+functions/.env
+.env
+*.env
+
+# Legacy server we’re removing
+server/
+server/**
+
+# Local db/keys (legacy)
+server/coach.db
+server/sa-key.json
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+

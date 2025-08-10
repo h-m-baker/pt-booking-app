@@ -1,4 +1,4 @@
-// ----- DOM refs -----
+// DOM refs
 const form = document.getElementById("booking-form");
 const msg  = document.getElementById("msg");
 const submitBtn = document.getElementById("submitBtn");
@@ -6,23 +6,29 @@ const slotsEl = document.getElementById("slots");
 const dateInput = document.getElementById("date");
 const locationSelect = document.querySelector('select[name="location"]');
 
-// ----- Weekly schedule (edit this) -----
+// Weekly Schedule
 // Keys are JS weekday numbers: 0=Sun, 1=Mon, ... 6=Sat
 // Times are local "HH:MM" in 24h, start times for 1-hour sessions
 const WEEKLY_SCHEDULE = {
-  0: [],                                 // Sun (no sessions)
-  1: ["10:00","11:00","14:00","15:00", "16:00"],  // Mon
-  2: ["10:00","11:00","14:00","15:00", "16:00"],  // Tue
-  3: ["10:00","11:00","14:00","15:00", "16:00"],  // Wed
-  4: ["10:00","11:00","14:00","15:00", "16:00"],  // Thu
-  5: ["10:00","11:00","14:00","15:00", "16:00"],  // Fri
-  6: ["09:00","10:00"],          // Sat
+  0: ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"], // Sun
+  1: ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "15:00"],  // Mon
+  2: ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "15:00"],  // Tue
+  3: ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "15:00"],  // Wed
+  4: ["07:00", "07:30", "08:00", "08:30", "09:00", "15:00"],  // Thu
+  5: ["07:00", "07:30", "08:00", "08:30", "09:00", "15:00"],  // Fri
+  6: ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", 
+      "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", 
+      "14:00", "14:30", "15:00", "15:30", "16:00"],          // Sat
 };
 
-// ----- State -----
+for (const k of Object.keys(WEEKLY_SCHEDULE)) {
+  WEEKLY_SCHEDULE[k] = WEEKLY_SCHEDULE[k].map(t => t.trim());
+}
+
+// State
 let selectedHHMM = null;  // "HH:MM" for the chosen slot
 
-// ----- UX helper -----
+// UX helper
 function showMsg(text, ok = true) {
   msg.innerHTML = text;
   msg.style.color = ok ? "green" : "crimson";
@@ -40,6 +46,18 @@ function toLocalISO(dateStr, hhmm) {
   // dateStr is "YYYY-MM-DD", hhmm is "HH:MM" (local)
   return new Date(`${dateStr}T${hhmm}`).toISOString();
 }
+
+function todayYYYYMMDD() {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth()+1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+// set min date once UI is ready
+dateInput.setAttribute("min", todayYYYYMMDD());
+
 
 // Fetch existing bookings for a given local date
 async function fetchBookingsForDate(dateStr) {
@@ -131,7 +149,7 @@ async function renderSlots() {
       // toggle selection
       for (const b of slotsEl.querySelectorAll(".slot-btn")) b.classList.remove("selected");
       btn.classList.add("selected");
-      selectedHHMM = hhmm;
+      selectedHHMM = hhmm.trim();
     });
 
     slotsEl.appendChild(btn);
@@ -139,8 +157,16 @@ async function renderSlots() {
 }
 
 // Re-render slots whenever date or location changes
-dateInput.addEventListener("change", renderSlots);
-if (locationSelect) locationSelect.addEventListener("change", renderSlots);
+// dateInput.addEventListener("change", renderSlots);
+// if (locationSelect) locationSelect.addEventListener("change", renderSlots);
+
+dateInput.addEventListener("input", () => {
+  const min = dateInput.getAttribute("min");
+  if (dateInput.value && dateInput.value < min) {
+    dateInput.value = min;
+  }
+  renderSlots();
+});
 
 // Default date = today (or next weekday with availability)
 (function setDefaultDate() {
@@ -149,7 +175,7 @@ if (locationSelect) locationSelect.addEventListener("change", renderSlots);
   renderSlots();
 })();
 
-// ----- Submit handler -----
+// Submit handler
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (submitBtn) submitBtn.disabled = true;
@@ -163,11 +189,11 @@ form.addEventListener("submit", async (e) => {
 
     const fd = new FormData(form);
     const dateStr = dateInput.value;
-    const start_local = `${dateStr}T${selectedHHMM}`;
+    const start_local = `${dateStr}T${selectedHHMM.trim()}`;
 
     const payload = {
       person_name:  fd.get("person_name"),
-      person_email: fd.get("person_email"),
+      person_phone: fd.get("phone") || "",
       location:     fd.get("location"),
       start_local,
       tz: Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -180,9 +206,10 @@ form.addEventListener("submit", async (e) => {
     });
 
     if (res.ok) {
-      const data = await res.json().catch(() => ({}));
-      const link = data.calendarUrl ? ` <a href="${data.calendarUrl}" target="_blank" rel="noopener">View in Calendar</a>` : "";
-      showMsg("Booked! Payment can be made on the day" + link, true);
+      await res.json().catch(() => ({}));
+      // const data = await res.json().catch(() => ({}));
+      // const link = data.calendarUrl ? ` <a href="${data.calendarUrl}" target="_blank" rel="noopener">View in Calendar</a>` : "";
+      showMsg("Booked! Payment can be made on the day", true);
       form.reset();
       // Re-render slots to reflect the new booking
       renderSlots();
