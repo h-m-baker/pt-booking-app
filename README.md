@@ -14,6 +14,6 @@ This app is a simple booking site for my friend who runs grappling privates (1-1
 
 ## Local Dev
 ```bash
-# or use Firebase emulators (Functions + Hosting)
+# use Firebase emulators (Functions + Hosting)
 cd functions && npm i && cd ..
 firebase emulators:start --only "functions,hosting"
