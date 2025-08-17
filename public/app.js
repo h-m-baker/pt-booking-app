@@ -207,12 +207,17 @@ form.addEventListener("submit", async (e) => {
 
     if (res.ok) {
       await res.json().catch(() => ({}));
-      // const data = await res.json().catch(() => ({}));
-      // const link = data.calendarUrl ? ` <a href="${data.calendarUrl}" target="_blank" rel="noopener">View in Calendar</a>` : "";
-      showMsg("Booked! Payment can be made on the day", true);
+      const loc = fd.get("location");
+      const time = selectedHHMM.trim();
+      const date = dateStr;
+      showMsg(
+        `Booked for ${time} on ${date} at ${loc}! Payment can be made on the day`, 
+        true
+      );
       form.reset();
       // Re-render slots to reflect the new booking
       renderSlots();
+
     } else {
       const { error } = await res.json().catch(() => ({ error: "Failed." }));
       showMsg(error || "Failed.", false);

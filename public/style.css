@@ -7,13 +7,13 @@ html, body {
   color: #0b1220;
 }
 :root {
-  --panel-bg: rgba(255,255,255,0.42);
-  --panel-border: rgba(255,255,255,0.42);
+  --panel-bg: transparent; /*rgba(255,255,255,0.1);))*/
+  --panel-border: rgba(255,255,255,0.1);
   --panel-radius: 16px;
   --panel-pad: 18px;
 
   --text: #0b1220;
-  --text-muted: #5f6b7a;
+  --text-muted: #0b1220;
 
   --brand: #2563eb;
   --brand-ink: #fff;
@@ -56,10 +56,11 @@ main {
   margin: 28px auto;
   padding: var(--panel-pad);
   background: var(--panel-bg);
-  border: 1px solid var(--panel-border);
+  border: none;
+  /* border: 1px solid var(--panel-border); */
   border-radius: var(--panel-radius);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(8px);
+  box-shadow: none; /*var(--shadow-soft);*/
+  backdrop-filter: blur(0px);
 }
 
 main h1 {
