@@ -81,11 +81,19 @@ function bookingToLocalHHMM(b) {
   return { startHHMM: `${sh}:${sm}`, endHHMM: `${eh}:${em}`, loc: b.location };
 }
 
+function requiredLeadHours(dateStr){
+  const dow = new Date(`${dateStr}T12:00`).getDay();
+  if (dow === 5 || dow === 6) return 24;
+  return 8;
+}
+
 // Block slots that start within the next 24 hours (rolling)
+// look at difference between date vs datestring
 function isWithinNext24h(dateStr, hhmm) {
   const slotStartMs = new Date(`${dateStr}T${hhmm}`).getTime(); // local time -> ms
-  const nowPlus24h  = Date.now() + 24*60*60*1000;
-  return slotStartMs < nowPlus24h;
+  const leadMs = requiredLeadHours(dateStr)*60*60*1000;
+  // const nowPlus24h  = Date.now() + 24*60*60*1000;
+  return slotStartMs < (Date.now() + leadMs);
 }
 
 // Full conflict check (overlap + 60-min travel rule) for chosen location
